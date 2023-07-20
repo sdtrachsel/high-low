@@ -22,6 +22,7 @@ const initialState = {
   currentWinningNum: null,
   currentGameScore: 0,
   currentGuess: null,
+  feedback: ''
 }
 
 const gameSlice = createSlice({
@@ -31,27 +32,39 @@ const gameSlice = createSlice({
     setCurrentGuess: (state, action) => {
       state.currentGuess = action.payload
     },
-    evaluateTurn: (state) => {
-      if(state.currentGuess !== state.currentWinningNum){
-        state.currentGameScore = state.currentGameScore + 1;
-        state.currentGuess = null;
-      } else {
-        state.currentGameScore = state.currentGameScore +1
-        state.games.push({
-          winningNumber: state.currentWinningNum,
-          score: state.currentGameScore
-        })
-      }
+    clearCurrentGuess: (state) => {
+      state.currentGuess = null;
     },
-
-  },
+    increaseScore: (state) => {
+      state.currentGameScore = state.currentGameScore + 1;
+    },
+    clearScore:(state)=> {
+      state.currentGameScore = 0
+    },
+    increaseWins: (state) => {
+      state.games.push({
+        winningNumber: state.currentWinningNum,
+        score: state.currentGameScore
+      })
+    },
+    updateBestScore: (state) => {
+      state.highScore = [...state.games].sort((a, b) => a.score - b.score)[0].score
+    },
+    updateOverallAvg: (state) => {
+      const sum = state.games.reduce((total, game) => total + game.score, 0);
+      state.overAllAvg = state.games.length > 0 ? sum / state.games.length : null;
+    },
+    updateFeedback: (state,action)=>{
+      state.feedback = action.payload
+    },
+ },
   extraReducers: {
     [getWinningNumber.pending]: (state) => {
       state.isLoading = true;
     },
     [getWinningNumber.fulfilled]: (state, action) => {
       state.isLoading = false;
-      state.currentWinningNum = action.payload
+      state.currentWinningNum = action.payload[0]
     },
     [getWinningNumber.rejected]: (state) => {
       state.isLoading = false;
@@ -60,6 +73,14 @@ const gameSlice = createSlice({
   }
 })
 
-export const { setCurrentGuess, evaluateTurn } =
-  gameSlice.actions;
+export const { 
+              setCurrentGuess,
+              clearCurrentGuess, 
+              increaseScore,
+              clearScore,
+              increaseWins,
+              updateBestScore,
+              updateOverallAvg,
+              updateFeedback
+            } =gameSlice.actions;
 export default gameSlice.reducer
