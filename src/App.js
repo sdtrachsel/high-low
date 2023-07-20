@@ -36,7 +36,6 @@ function App() {
 
 
     if(currentWinningNum === currentGuess){
-      //update to announce winner div
       dispatch(updateFeedback('Winner!'))
       dispatch(increaseWins())
       dispatch(updateBestScore())
@@ -46,12 +45,20 @@ function App() {
         dispatch(updateFeedback(''));
         dispatch(getWinningNumber());
        
-      }, 1000);
+      }, 3000);
 
     } else if(currentGuess > currentWinningNum) {
-      dispatch(updateFeedback('High'))
+       dispatch(updateFeedback('Hi'))
+       setTimeout(() => {
+        dispatch(updateFeedback(''));      
+      }, 1500);
+
+
     } else if(currentGuess < currentWinningNum){
-      dispatch(updateFeedback('Low'))
+      dispatch(updateFeedback('Lo'))
+      setTimeout(() => {
+        dispatch(updateFeedback(''));      
+      }, 1500);
     }
 
     dispatch(clearCurrentGuess())         
@@ -59,9 +66,8 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Hi-Lo</h1>
-      <p>Winning Number: {currentWinningNum}</p>
-      <div>
+      <h1 className="title">Hi-Lo</h1>
+      <div className="dashboard">
         <p>Best Score: {highScore? highScore: null} </p>
         <p>Overall Average Guesses: {overAllAvg? overAllAvg: null}</p>
       </div>
