@@ -9,6 +9,7 @@ import {
         increaseWins,
         updateBestScore,
         updateOverallAvg,
+        toggleAllowGuess,
         updateFeedback
        } 
         from "../features/game/gameSlice";
@@ -19,6 +20,7 @@ export const Form = () => {
           currentWinningNum, 
           currentGameScore,
           currentGuess,
+          allowGuess,
           feedback
          } = useSelector((state) => state.game)
 
@@ -28,6 +30,7 @@ export const Form = () => {
     dispatch(increaseScore())
 
     if(currentWinningNum === currentGuess){
+      dispatch(toggleAllowGuess())
       dispatch(updateFeedback('Winner!'))
       dispatch(increaseWins())
       dispatch(updateBestScore())
@@ -57,6 +60,7 @@ export const Form = () => {
           <input type="number" 
                  id="guess" 
                  name="guess"
+                 disabled={!allowGuess}
                  min={1} 
                  max={100} 
                  value={currentGuess || ''}
