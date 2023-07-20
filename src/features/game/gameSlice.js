@@ -22,6 +22,7 @@ const initialState = {
   currentWinningNum: null,
   currentGameScore: 0,
   currentGuess: null,
+  allowGuess: false,
   feedback: ''
 }
 
@@ -54,6 +55,9 @@ const gameSlice = createSlice({
       const sum = state.games.reduce((total, game) => total + game.score, 0);
       state.overAllAvg = state.games.length > 0 ? sum / state.games.length : null;
     },
+    toggleAllowGuess: (state) => {
+      state.allowGuess = !state.allowGuess
+    },
     updateFeedback: (state,action)=>{
       state.feedback = action.payload
     },
@@ -61,13 +65,16 @@ const gameSlice = createSlice({
  extraReducers: (builder) => {
   builder
     .addCase(getWinningNumber.pending, (state) => {
+      state.allowGuess = false;
       state.isLoading = true;
     })
     .addCase(getWinningNumber.fulfilled, (state, action) => {
       state.isLoading = false;
+      state.allowGuess = true;
       state.currentWinningNum = action.payload[0];
     })
     .addCase(getWinningNumber.rejected, (state) => {
+      state.allowGuess = false;
       state.isLoading = false;
       state.error = true;
     })
@@ -82,6 +89,7 @@ export const {
               increaseWins,
               updateBestScore,
               updateOverallAvg,
+              toggleAllowGuess,
               updateFeedback
             } =gameSlice.actions;
 export default gameSlice.reducer
