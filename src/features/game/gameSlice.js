@@ -58,19 +58,20 @@ const gameSlice = createSlice({
       state.feedback = action.payload
     },
  },
-  extraReducers: {
-    [getWinningNumber.pending]: (state) => {
+ extraReducers: (builder) => {
+  builder
+    .addCase(getWinningNumber.pending, (state) => {
       state.isLoading = true;
-    },
-    [getWinningNumber.fulfilled]: (state, action) => {
+    })
+    .addCase(getWinningNumber.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.currentWinningNum = action.payload[0]
-    },
-    [getWinningNumber.rejected]: (state) => {
+      state.currentWinningNum = action.payload[0];
+    })
+    .addCase(getWinningNumber.rejected, (state) => {
       state.isLoading = false;
       state.error = true;
-    }
-  }
+    })
+}
 })
 
 export const { 
